@@ -19,8 +19,35 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"os"
+	"time"
+
+	dotenv "github.com/joho/godotenv"
+	tele "gopkg.in/telebot.v3"
 )
 
 func main() {
-	fmt.Printf("Initial commit\n")
+	err := dotenv.Load(".env")
+	if err != nil {
+		log.Fatal(fmt.Sprintf("Could not load .env: %s", err))
+	}
+
+	botSettings := tele.Settings{
+		Token:  os.Getenv("TOKEN"),
+		Poller: &tele.LongPoller{Timeout: 10 * time.Second},
+	}
+
+	bot, err := tele.NewBot(botSettings)
+
+	if err != nil {
+		log.Fatal(fmt.Sprintf("Could not create bot: %s", err))
+	}
+
+	bot.Handle("/ping", func(c tele.Context) error {
+		return c.Send("Pong!")
+	})
+
+	bot.Start()
+
 }
