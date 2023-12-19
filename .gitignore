@@ -1,7 +1,3 @@
 # Project directories
 out
 .vscode
-.idea
-.env
-db.sqlite
-go.sum
